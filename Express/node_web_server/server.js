@@ -2,7 +2,7 @@ const express = require('express');
 const hbs = require('hbs');
 const fs = require('fs');
 
-const port = process.env.port || 3000;
+const port = process.env.PORT || 3000;
 var app = express();
 
 // register use of partial templates
@@ -16,9 +16,9 @@ app.set('view engine','hbs');
 //  __dirname stores the path to the project directory
 app.use(express.static(__dirname + '/public'));
 
-app.use((req, res, next) => {
-    res.render('maintenance.hbs');
-});
+// app.use((req, res, next) => {
+//     res.render('maintenance.hbs');
+// });
 
 // middleware to process HTTP request, response
 app.use((req, res, next) => {
@@ -69,6 +69,12 @@ app.get('/about_Aloysius', (req, res) => {
 app.get('/about', (req, res) => {
     res.render('about.hbs', {
         pageTitle: 'About Page'
+    });
+})
+
+app.get('/projectsPortfolio', (req, res) => {
+    res.render('projectsPortfolio.hbs', {
+        pageTitle: 'Projects Portfolio'
     });
 })
 
