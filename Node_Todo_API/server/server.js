@@ -9,19 +9,29 @@ mongoose.connect('mongodb://localhost:27017/TodoApp');
 // Second arg: Schema of Collection
 var Todo = mongoose.model('Todo', {
     text: {
-        type: String
+        type: String,
+        required: true,
+        minlength: 1,
+        trim: true
     },
     completed: {
-        type: Boolean
+        type: Boolean,
+        default: false
     },
     completedAt: {
-        type: Number
+        type: Number,
+        default: null
     }
 });
 
-var newTodo = new Todo({
-    text: 'Cook dinner'
-})
+var User = mongoose.model('User', {
+    email: {
+        type: String,
+        required: true,
+        minlength: 1,
+        trim: true
+    }
+});
 
 var otherTodo = new Todo({
     text: 'Learn NodeJS',
@@ -29,14 +39,18 @@ var otherTodo = new Todo({
     completedAt: 131
 })
 
-// newTodo.save().then((doc) => {
-//     console.log('Saved todo', doc);
-// }, (error) => {
-//     console.log('Unable to save todo');
-// });
+var newUser = new User({
+    email: 'learning@nodejs.com'
+})
 
 otherTodo.save().then((doc) => {
     console.log(JSON.stringify(doc, undefined, 2));
 }, (error) => {
     console.log('Unable to save todo', error);
+});
+
+newUser.save().then((doc) => {
+    console.log(JSON.stringify(doc, undefined, 2));
+}, (error) => {
+    console.log('Unable to save user', error);
 });
