@@ -19,11 +19,21 @@ app.post('/todos', (req, res) => {
 
     todo.save().then((doc) => {
         console.log(JSON.stringify(doc, undefined, 2));
-        res.send(doc);
+        res.status(200).send(doc);
     }, (error) => {
         console.log('Unable to save todo', error);
         res.status(400).send(error);
     });
+});
+
+app.get('/todos', (req, res) => {
+    Todo.find().then((todos) => {
+        res.status(200).send({
+            todos: todos
+        });
+    }, (error) => {
+        res.status(400).send(error);
+    })
 });
 
 app.listen(3000, () => {
