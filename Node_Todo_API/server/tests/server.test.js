@@ -4,11 +4,21 @@ const request = require('supertest');
 const app = require('./../server.js').app;
 const Todo = require('./../models/todo.js').Todo;
 
+const todos = [{
+    text: 'First test todo'
+}, {
+    text: 'Second test todo'
+}];
+
 beforeEach((done) => {              // executed beforeEach test case.
-    Todo.remove({}).then(() => {    // clear the database because test case assumes there is no document in db
-        done();
-    })
-})
+    Todo.remove({})
+        .then(() => {
+            return Todo.insertMany(todos);
+        })
+        .then(() => {    // clear the database because test case assumes there is no document in db
+            done();
+        });
+});
 
 describe('POST/todos', () => {
     it('should create a new todo', (done) => {
@@ -25,7 +35,7 @@ describe('POST/todos', () => {
                     return done(err);   // 7. return required so that below codes not executed
                 }
                 
-                Todo.find()             // make request to database to find all todos
+                Todo.find({text})             // make request to database to find all todos
                     .then((todos) => {
                         expect(todos.length).toBe(1);       // expect only 1 document in db
                         expect(todos[0].text).toBe(text);   // expect that 1 document to have text property with value same as text variable
@@ -48,11 +58,29 @@ describe('POST/todos', () => {
                 
                 Todo.find()             // make request to database to find all todos
                     .then((todos) => {
-                        expect(todos.length).toBe(0);       // expect only 0 document in db
+                        expect(todos.length).toBe(2);       // expect only 0 document in db
                         done();
                     }).catch((e) => {
                         return done(e);     // exception handling
                     });
+            });
+    });
+});
+
+describe('GET /todos', () => {
+    it('should get all todos', (done) => {
+        request(app)
+            .get('/todos')
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todos.length).toBe(2);
+            })
+            .end((err, res) => {
+                if (err){
+                    return done(err);
+                }
+
+                return done();
             });
     });
 });
