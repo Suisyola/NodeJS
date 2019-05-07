@@ -8,6 +8,7 @@ var Todo = require('./models/todo.js').Todo;
 var User = require('./models/user.js').User;
 
 var app = express();
+const port = process.env.PORT || 3000;
 
 // use the body-parser middleware. It converts request body to JSON Object
 app.use(bodyParser.json());
@@ -65,7 +66,7 @@ app.get('/todos/:id', (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log('Started on port 3000');
+    console.log(`Started on port ${port}`);
 });
 
 module.exports = {
