@@ -1,3 +1,5 @@
+require('./config/config.js');
+
 const ObjectID = require('mongodb').ObjectID;
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -8,7 +10,7 @@ var Todo = require('./models/todo.js').Todo;
 var User = require('./models/user.js').User;
 
 var app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 // use the body-parser middleware. It converts request body to JSON Object
 app.use(bodyParser.json());
