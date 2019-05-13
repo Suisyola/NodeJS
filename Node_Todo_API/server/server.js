@@ -8,6 +8,7 @@ const _ = require('lodash');
 var mongoose = require('./db/mongoose.js').mongoose;
 var Todo = require('./models/todo.js').Todo;
 var User = require('./models/user.js').User;
+var authenticate = require('./middleware/authenticate').authenticate;
 
 var app = express();
 const port = process.env.PORT;
@@ -132,6 +133,12 @@ app.post('/users', (req, res) => {
         console.log('Unable to save user', error);
         res.status(400).send(error);
     });
+});
+
+
+
+app.get('/users/me', authenticate, (req, res) => {
+    res.send(req.user);
 });
 
 app.listen(port, () => {
