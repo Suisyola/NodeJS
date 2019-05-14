@@ -16,7 +16,7 @@ const todos = [{
 }];
 
 beforeEach((done) => {              // executed beforeEach test case.
-    Todo.remove({})
+    Todo.deleteMany({})
         .then(() => {
             return Todo.insertMany(todos);
         })
@@ -27,7 +27,7 @@ beforeEach((done) => {              // executed beforeEach test case.
 
 describe('POST/todos', () => {
     it('should create a new todo', (done) => {
-        var text = 'Test todo text'
+        var text = 'some todos';
          
         request(app)                    // 1. making request via supertest on app variable
             .post('/todos')             // 2. post to /todos
