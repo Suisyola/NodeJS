@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 // The Schema method is required for adding custom method for the model.
 var UserSchema = new mongoose.Schema({
@@ -78,8 +79,25 @@ UserSchema.statics.findByToken = function (token) {
     });
 };
 
+// Callback function is called before(pre) UserSchema's save event
+UserSchema.pre('save', function(next){
+    var user = this;
+    if (user.isModified('password')) {
+        console.log('modified');
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                user.password = hash;
+                next();
+            });
+        }); 
+        
+    } else {
+        next();
+    }
+});
+
 var User = mongoose.model('User', UserSchema);
 
 module.exports = {
-    User: User
+    "User": User
 };
