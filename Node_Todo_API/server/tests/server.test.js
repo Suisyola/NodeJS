@@ -4,26 +4,13 @@ const ObjectID = require('mongodb').ObjectID;
 
 const app = require('./../server.js').app;
 const Todo = require('./../models/todo.js').Todo;
+const todos = require('./seed/seed.js').todos;
+const populateTodos = require('./seed/seed.js').populateTodos;
+const users = require('./seed/seed.js').users;
+const populateUsers = require('./seed/seed.js').populateUsers;
 
-const todos = [{
-    _id : new ObjectID(),
-    text: 'First test todo'
-}, {
-    _id : new ObjectID(),
-    text: 'Second test todo',
-    completed: true,
-    completedAt: 333
-}];
-
-beforeEach((done) => {              // executed beforeEach test case.
-    Todo.deleteMany({})
-        .then(() => {
-            return Todo.insertMany(todos);
-        })
-        .then(() => {    // clear the database because test case assumes there is no document in db
-            done();
-        });
-});
+beforeEach(populateUsers);
+beforeEach(populateTodos);
 
 describe('POST/todos', () => {
     it('should create a new todo', (done) => {
