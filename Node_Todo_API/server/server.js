@@ -158,7 +158,7 @@ app.delete('/users/me/token', authenticate, (req, res) => {
 });
 
 app.get('/users/me', authenticate, (req, res) => {
-    res.send(res.user);
+    res.send(req.user);
 });
 
 app.listen(port, () => {
