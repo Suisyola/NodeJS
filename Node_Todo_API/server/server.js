@@ -17,7 +17,6 @@ const port = process.env.PORT;
 app.use(bodyParser.json());
 
 app.post('/todos', authenticate, (req, res) => {
-    console.log(req.body);
 
     var todo = new Todo({
         text: req.body.text,
@@ -25,7 +24,6 @@ app.post('/todos', authenticate, (req, res) => {
     })
 
     todo.save().then((doc) => {
-        console.log(JSON.stringify(doc, undefined, 2));
         res.status(200).send(doc);
     }, (error) => {
         console.log('Unable to save todo', error);
@@ -114,8 +112,6 @@ app.patch('/todos/:id', authenticate, (req, res) => {
         body.completedAt = null;
     }
 
-    console.log(JSON.stringify(body, undefined, 2));
-
     Todo.findOneAndUpdate(
         {_id: id, _creator: req.user._id}, 
         { $set: body }, 
@@ -137,7 +133,6 @@ app.post('/users', (req, res) => {
     var user = new User(body);
 
     user.save().then(() => {
-        console.log(JSON.stringify(user, undefined, 2));
         return user.generateAuthToken();
     }).then((token) => {
         res.header('x-auth', token).send(user);
