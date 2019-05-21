@@ -21,22 +21,19 @@ io.on('connection', (socket) => {
 
     var admin = 'Admin';
 
-    //  Emit event (e.g. welcomeMessageToUser) to a client
-    socket.emit('welcomeMessageToUser', generateMessage(admin, 'Welcome to the chat app'));
+    //  Emit event (e.g. newMessage) to a client
+    socket.emit('newMessage', generateMessage(admin, 'Welcome to the chat app'));
 
     // socket.broadcast.emit emits event to all connections except for the client that broadcast the event
-    socket.broadcast.emit('broadcastWelcomeMessageToUsers', generateMessage(admin, 'New user joined'));
+    socket.broadcast.emit('newMessage', generateMessage(admin, 'New user joined'));
 
-    socket.on('createEmail', (newEmail) => {
-        console.log('createEmail', newEmail);
-    });
-
-    socket.on('createMessage', (newMessage) => {
+    socket.on('createMessage', (newMessage, callback) => {
         console.log('createMessage', newMessage);
 
         // io.emit emit event to all connections
         io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
 
+        callback('This is from the server');
     });
 
     // listen for client that disconnect

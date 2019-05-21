@@ -2,11 +2,6 @@ var socket = io();
 
 socket.on('connect', function () {
     console.log('Connected to server');
-
-    socket.emit('createEmail', {
-        to: 'someone@email.com',
-        text: 'Hi there!'
-    });
 });
 
 socket.on('disconnect', function () {
@@ -15,12 +10,20 @@ socket.on('disconnect', function () {
 
 socket.on('newMessage', function (message) {
     console.log('New message', message);
+
+    var li = $('<li></li>');
+    li.text(`${message.from}: ${message.text}`);
+
+    $('#messages').append(li);
 });
 
-socket.on('welcomeMessageToUser', function (message) {
-    console.log('Welcome!', message);
-});
+$('#message-form').on('submit', function(e) {
+    e.preventDefault();
 
-socket.on('broadcastWelcomeMessageToUsers', function (message) {
-    console.log('Let\'s welcome our new user', message);
+    socket.emit('createMessage', {
+        from: 'User',
+        text: $("input[name='message']").val()
+    }, function() {
+        
+    });
 });
