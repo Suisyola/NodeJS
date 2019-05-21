@@ -7,21 +7,20 @@ socket.on('connect', function () {
         to: 'someone@email.com',
         text: 'Hi there!'
     });
-
-    socket.emit('createMessage', {
-        from: 'replyYourMessage@email.com',
-        text: 'Noted'
-    });
 });
 
 socket.on('disconnect', function () {
     console.log('Disconnected from server');
 });
 
-socket.on('newEmail', function (email) {
-    console.log('New email', email);
-});
-
 socket.on('newMessage', function (message) {
     console.log('New message', message);
+});
+
+socket.on('welcomeMessageToUser', function (message) {
+    console.log('Welcome!', message);
+});
+
+socket.on('broadcastWelcomeMessageToUsers', function (message) {
+    console.log('Let\'s welcome our new user', message);
 });

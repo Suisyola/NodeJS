@@ -18,17 +18,20 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
     console.log('New user connected');
 
-    //  Emit event (e.g. newEmail) to client
-    socket.emit('newEmail', {
-        from: 'aloy@email.com',
-        text: 'whatsup!?',
-        createdAt: 123
+    var admin = 'Admin';
+
+    //  Emit event (e.g. welcomeMessageToUser) to a client
+    socket.emit('welcomeMessageToUser', {
+        from: admin,
+        text: 'Welcome to the chat app',
+        createdAt: new Date().getTime()
     });
 
-    socket.emit('newMessage', {
-        from: 'YouGotAMessage@email.com',
-        text: 'secret message',
-        createdAt: 123
+    // socket.broadcast.emit emits event to all connections except for the client that broadcast the event
+    socket.broadcast.emit('broadcastWelcomeMessageToUsers', {
+        from: admin,
+        text: 'New user joined',
+        createdAt: new Date().getTime()
     });
 
     socket.on('createEmail', (newEmail) => {
@@ -37,6 +40,14 @@ io.on('connection', (socket) => {
 
     socket.on('createMessage', (newMessage) => {
         console.log('createMessage', newMessage);
+
+        // io.emit emit event to all connections
+        io.emit('newMessage', {
+            from: newMessage.from,
+            text: newMessage.text,
+            createdAt: new Date().getTime()
+        });
+
     });
 
     // listen for client that disconnect
