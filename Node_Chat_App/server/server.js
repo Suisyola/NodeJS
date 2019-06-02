@@ -7,6 +7,7 @@ const socketIO = require('socket.io');
 
 const generateMessage = require('./utils/message.js').generateMessage;
 const generateLocationMessage = require('./utils/message.js').generateLocationMessage;
+const isRealString = require('./utils/validation').isRealString;
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT;
 
@@ -22,11 +23,26 @@ io.on('connection', (socket) => {
 
     var admin = 'Admin';
 
-    //  Emit event (e.g. newMessage) to a client
-    socket.emit('newMessage', generateMessage(admin, 'Welcome to the chat app'));
+    socket.on('join', (params, callback) => {
+        if (!isRealString(params.name) || !isRealString(params.room)) {
+            callback('Name and room name are required.');
+        }
 
-    // socket.broadcast.emit emits event to all connections except for the client that broadcast the event
-    socket.broadcast.emit('newMessage', generateMessage(admin, 'New user joined'));
+        socket.join(params.room);
+
+        //  Emit event (e.g. newMessage) to a client
+        socket.emit('newMessage', generateMessage(admin, 'Welcome to the chat app'));
+
+        // socket.broadcast.emit emits event to all connections except for the client that broadcast the event
+        //socket.broadcast.emit('newMessage', generateMessage(admin, 'New user joined'));
+
+        console.log(`broadcasting to ${params.room}`);
+
+        // socket.broadcast.emit emits event to all connections in the room except for the client that broadcast the event
+        socket.broadcast.to(params.room).emit('newMessage', generateMessage(admin, `${params.name} has joined`));
+
+        callback();
+    });
 
     socket.on('createMessage', (newMessage, callback) => {
         console.log('createMessage', newMessage);
