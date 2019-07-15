@@ -26,10 +26,40 @@ const getCountries = async (currencyCode) => {
     return countriesThatSupportCurrency;
 };
 
-getExchangeRate('USD', 'CAD').then((rate) => {
-    console.log(rate);
-})
+// // Alternate coding implementation without using async and await
+// const convertCurrency = (from, to, amount) => {
 
-getCountries('SGD').then((countries) => {
-    console.log(countries);
-})
+//     let convertedAmount;
+
+//     return getExchangeRate(from, to).then((rate) => {
+
+//         // note that @convertedAmount is not in the same scope of the following then())
+//         // hence, @convertedAmount is not accessible in then().
+//         // the workaround is to declare this variable up front.
+//         convertedAmount = (amount * rate).toFixed(2);
+//         return getCountries(to);
+
+//     }).then((countries) => {
+//         return `${amount} ${from} is worth ${convertedAmount} ${to}. \nYou can spend it in the following countries: ${countries.join(', ')}`;
+//     });
+// };
+
+const convertCurrency = async (from, to, amount)=> {
+    const exchangeRate = await getExchangeRate(from, to);
+    const convertedAmount = (amount * exchangeRate).toFixed(2);
+    const countries = await getCountries(to);
+
+    return `${amount} ${from} is worth ${convertedAmount} ${to}. \nYou can spend it in the following countries: ${countries.join(', ')}`;
+};
+
+convertCurrency('JPY', 'MYR', 10000).then((message) => {
+    console.log(message);
+});
+
+// getExchangeRate('USD', 'CAD').then((rate) => {
+//     console.log(rate);
+// })
+
+// getCountries('SGD').then((countries) => {
+//     console.log(countries);
+// })
